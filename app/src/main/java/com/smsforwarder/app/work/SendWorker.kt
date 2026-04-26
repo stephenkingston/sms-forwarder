@@ -1,7 +1,9 @@
 package com.smsforwarder.app.work
 
 import android.content.Context
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -101,12 +103,7 @@ class SendWorker(
                             nextRetryAt = nextAt
                         )
                     )
-                    val retry = OneTimeWorkRequestBuilder<SendWorker>()
-                        .setInputData(workDataOf(KEY_MESSAGE_ID to message.id))
-                        .setInitialDelay(delaySec, TimeUnit.SECONDS)
-                        .addTag(TAG)
-                        .build()
-                    WorkManager.getInstance(applicationContext).enqueue(retry)
+                    enqueue(applicationContext, message.id, initialDelaySec = delaySec)
                 }
                 Result.success()
             }
@@ -125,5 +122,18 @@ class SendWorker(
         const val KEY_MESSAGE_ID = "message_id"
         const val TAG = "send_sms_email"
         private const val MAX_ATTEMPTS = 5
+
+        fun enqueue(context: Context, messageId: Long, initialDelaySec: Long = 0L) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+            val request = OneTimeWorkRequestBuilder<SendWorker>()
+                .setInputData(workDataOf(KEY_MESSAGE_ID to messageId))
+                .setConstraints(constraints)
+                .apply { if (initialDelaySec > 0) setInitialDelay(initialDelaySec, TimeUnit.SECONDS) }
+                .addTag(TAG)
+                .build()
+            WorkManager.getInstance(context).enqueue(request)
+        }
     }
 }

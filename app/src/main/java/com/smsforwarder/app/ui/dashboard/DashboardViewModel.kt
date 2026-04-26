@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.smsforwarder.app.data.ForwardingConfig
 import com.smsforwarder.app.data.Message
 import com.smsforwarder.app.data.MessageStatus
@@ -71,11 +68,7 @@ class DashboardViewModel(private val repo: Repository, private val context: Cont
                     nextRetryAt = null
                 )
             )
-            val request = OneTimeWorkRequestBuilder<SendWorker>()
-                .setInputData(workDataOf(SendWorker.KEY_MESSAGE_ID to message.id))
-                .addTag(SendWorker.TAG)
-                .build()
-            WorkManager.getInstance(context).enqueue(request)
+            SendWorker.enqueue(context, message.id)
         }
     }
 
