@@ -1,0 +1,13 @@
+-keep class com.sun.mail.** { *; }
+-keep class javax.mail.** { *; }
+-keep class jakarta.mail.** { *; }
+-keep class javax.activation.** { *; }
+-keep class com.sun.activation.** { *; }
+-dontwarn com.sun.mail.**
+-dontwarn javax.mail.**
+-dontwarn jakarta.mail.**
+-dontwarn javax.activation.**
+
+-keep class androidx.security.crypto.** { *; }
+-keep class * extends androidx.work.Worker
+-keep class * extends androidx.work.CoroutineWorker
