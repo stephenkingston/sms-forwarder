@@ -61,7 +61,7 @@ info "sdkmanager: $(command -v sdkmanager)"
 info "Refreshing package index (first run downloads several MB)"
 sdkmanager --update
 info "Accepting licenses (printing 'y' to each — output is intentionally visible)"
-yes | sdkmanager --licenses
+printf 'y\n%.0s' {1..200} | sdkmanager --licenses
 info "Installing platform-tools, ${ANDROID_PLATFORM}, build-tools;${ANDROID_BUILD_TOOLS}"
 sdkmanager --install \
     "platform-tools" \
