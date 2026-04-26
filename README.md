@@ -102,6 +102,10 @@ app/src/main/
 └── res/                          Themes, launcher icon, backup rules
 ```
 
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE) — free to use, modify, and share for any **non-commercial** purpose (personal, hobby, research, education, charity, government). Commercial use is not permitted; contact the author for a commercial license.
+
 ## Notes
 
 - **Privacy**: all data stays on the device. Nothing is transmitted except the email send to Gmail SMTP.
