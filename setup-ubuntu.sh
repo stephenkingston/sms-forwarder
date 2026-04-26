@@ -90,10 +90,18 @@ else
 fi
 done_
 
-step "5/5  Writing local.properties"
+step "5/5  Writing local.properties and pinning JDK 17 for Gradle"
 cat > "$SCRIPT_DIR/local.properties" <<EOF
 sdk.dir=$ANDROID_HOME
 EOF
+
+GRADLE_PROPS="$SCRIPT_DIR/gradle.properties"
+if ! grep -q '^org.gradle.java.home=' "$GRADLE_PROPS" 2>/dev/null; then
+    info "Pinning org.gradle.java.home to $JAVA_HOME in gradle.properties"
+    printf '\n# Set by setup-ubuntu.sh — Gradle uses this JDK to run and to compile.\norg.gradle.java.home=%s\n' "$JAVA_HOME" >> "$GRADLE_PROPS"
+else
+    info "gradle.properties already has org.gradle.java.home"
+fi
 done_
 
 cat <<EOF
