@@ -47,14 +47,26 @@ done_
 export ANDROID_HOME="$ANDROID_SDK_DIR"
 export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
 
+if [ -z "${JAVA_HOME:-}" ] || [ ! -x "${JAVA_HOME:-}/bin/javac" ]; then
+    if [ -d /usr/lib/jvm/java-17-openjdk-amd64 ]; then
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    elif command -v javac >/dev/null 2>&1; then
+        export JAVA_HOME="$(readlink -f "$(command -v javac)" | sed 's|/bin/javac||')"
+    fi
+fi
+
 step "3/5  Installing Android SDK packages and accepting licenses"
-info "Accepting licenses (this may print a lot)"
-yes | sdkmanager --licenses >/dev/null
+info "JAVA_HOME=${JAVA_HOME:-<unset>}"
+info "sdkmanager: $(command -v sdkmanager)"
+info "Refreshing package index (first run downloads several MB)"
+sdkmanager --update
+info "Accepting licenses (printing 'y' to each — output is intentionally visible)"
+yes | sdkmanager --licenses
 info "Installing platform-tools, ${ANDROID_PLATFORM}, build-tools;${ANDROID_BUILD_TOOLS}"
 sdkmanager --install \
     "platform-tools" \
     "platforms;${ANDROID_PLATFORM}" \
-    "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+    "build-tools;${ANDROID_BUILD_TOOLS}"
 done_
 
 step "4/5  Bootstrapping Gradle wrapper"
