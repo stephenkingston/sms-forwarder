@@ -198,8 +198,7 @@ fun OnboardingScreen(
                 Button(
                     onClick = {
                         val perms = mutableListOf(
-                            Manifest.permission.RECEIVE_SMS,
-                            Manifest.permission.READ_SMS
+                            Manifest.permission.RECEIVE_SMS
                         )
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             perms += Manifest.permission.POST_NOTIFICATIONS
